@@ -9,12 +9,13 @@ exports.createCategory = async (req, res) => {
 
   const { name, description } = req.body;
   const image = req.file ? req.file.path : ''; 
+  const imageLink = req.body.imageLink
 
   // Validate image type
-  if (req.file && !['image/jpeg', 'image/png', 'image/jpg'].includes(req.file.mimetype)) {
-    deleteFile(req.file);
-    return res.status(400).json({ message: 'Invalid file type. Only JPEG, PNG are allowed.' });
-  }
+  // if (req.file && !['image/jpeg', 'image/png', 'image/jpg'].includes(req.file.mimetype)) {
+  //   deleteFile(req.file);
+  //   return res.status(400).json({ message: 'Invalid file type. Only JPEG, PNG are allowed.' });
+  // }
 
   try {
     // Check if the category with the same name already exists
@@ -29,7 +30,7 @@ exports.createCategory = async (req, res) => {
     }
 
     // Create and save new category
-    const newCategory = new Category({ name, description, image });
+    const newCategory = new Category({ name, description, image:imageLink });
     await newCategory.save();
 
     res.status(201).json({

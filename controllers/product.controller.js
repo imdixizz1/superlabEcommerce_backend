@@ -14,9 +14,26 @@ exports.createProduct = async (req, res) => {
     attributes,
     stock,
     brand,
+    imageLink,
   } = req.body;
 
   try {
+    if (
+      !imageLink ||
+      !brand ||
+      !name ||
+      !description ||
+      !price ||
+      !mrp ||
+      !category ||
+      !attributes
+    ) {
+      return res.status(400).json({
+        status: "error",
+        message:
+          "images, brand, name, description, price, mrp, category, attributes are required.",
+      });
+    }
     // Check if the category exists
     const categoryExists = await Category.findById(category);
     if (!categoryExists) {
@@ -75,15 +92,17 @@ exports.createProduct = async (req, res) => {
       };
     });
 
-    const images = req.files.map((file) => file.path); // Multer stores file info in req.files
+    // const images = req.files.map((file) => file.path); // Multer stores file info in req.files
 
-    // Check if the images exist (Optional: to ensure images are uploaded)
-    if (!images.length) {
-      return res.status(400).json({
-        status: "error",
-        message: "No images uploaded.",
-      });
-    }
+    // // Check if the images exist (Optional: to ensure images are uploaded)
+    // if (!images.length) {
+    //   return res.status(400).json({
+    //     status: "error",
+    //     message: "No images uploaded.",
+    //   });
+    // }
+
+    const images = imageLink;
 
     // Create the new product
     const newProduct = new Product({
@@ -91,10 +110,10 @@ exports.createProduct = async (req, res) => {
       description,
       price,
       mrp,
-      specialPrice: specialPrice || 0,
+      specialPrice: specialPrice || price,
       category,
       attributes: productAttributes, // Store attributes with id, name, and value
-      stock: stock || 0,
+      stock: stock || 50,
       images,
       frontImage: images[0],
       brand,
