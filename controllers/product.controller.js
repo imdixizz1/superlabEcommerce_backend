@@ -43,22 +43,22 @@ exports.createProduct = async (req, res) => {
       });
     }
 
-    const parsedAttributes = attributes ? JSON.parse(attributes) : [];
+    
 
     // Check if the attributes exist and validate their values
     const attributesExists = await Attribute.find({
-      _id: { $in: parsedAttributes.map((attr) => attr._id) },
+      _id: { $in: attributes.map((attr) => attr._id) },
     });
 
-    if (attributesExists.length !== parsedAttributes.length) {
+    if (attributesExists.length !== attributes.length) {
       return res.status(400).json({
         status: "error",
         message: "Some attributes do not exist.",
       });
     }
 
-    for (let i = 0; i < parsedAttributes.length; i++) {
-      const attribute = parsedAttributes[i];
+    for (let i = 0; i < attributes.length; i++) {
+      const attribute = attributes[i];
       const attributeInDb = attributesExists.find(
         (attr) => attr._id.toString() === attribute._id
       );
@@ -80,7 +80,7 @@ exports.createProduct = async (req, res) => {
     }
 
     // Prepare the attributes to save in the product
-    const productAttributes = parsedAttributes.map((attr) => {
+    const productAttributes = attributes.map((attr) => {
       const attributeInDb = attributesExists.find(
         (attribute) => attribute._id.toString() === attr._id
       );
