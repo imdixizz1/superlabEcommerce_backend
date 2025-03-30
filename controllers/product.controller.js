@@ -138,9 +138,8 @@ exports.createProduct = async (req, res) => {
 
 exports.searchAndFilterProducts = async (req, res) => {
   const {
-    keyword,
-    category,
-    brand,
+    keyword,  // from name, description, brand
+    category, // from category
     minPrice,
     maxPrice,
     page = 1,
@@ -154,6 +153,7 @@ exports.searchAndFilterProducts = async (req, res) => {
     filterConditions.$or = [
       { name: { $regex: regex } },
       { description: { $regex: regex } },
+      { brand: { $regex: regex } },
     ];
   }
 
@@ -161,15 +161,12 @@ exports.searchAndFilterProducts = async (req, res) => {
     filterConditions.category = category;
   }
 
-  if (brand) {
-    filterConditions.brand = brand;
-  }
 
   if (minPrice) {
     filterConditions.price = { $gte: minPrice };
   }
   if (maxPrice) {
-    filterConditions.price = { ...filterConditions.price, $lte: specialPrice };
+    filterConditions.specialPrice = { ...filterConditions.price, $lte: maxPrice };
   }
 
   try {
