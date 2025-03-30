@@ -10,13 +10,6 @@ const storage = multer.diskStorage({
     
     let folder = 'storage';  
 
-    if (req.body.imageType === 'category') {
-      folder = 'storage/categories';  
-    } else if (req.body.imageType === 'product') {
-      folder = 'storage/products';  // If the image type is 'product'
-    } else if (req.body.imageType === 'user') {
-      folder = 'storage/users';  // If the image type is 'user'
-    }
 
     // Check if the folder exists, if not create it (including parent directories)
     if (!fs.existsSync(folder)) {
