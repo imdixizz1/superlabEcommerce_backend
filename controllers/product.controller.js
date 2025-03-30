@@ -181,3 +181,93 @@ exports.searchAndFilterProducts = async (req, res) => {
     });
   }
 };
+
+exports.manageProducts = async (req, res) => {
+  try {
+    if (!req.query.productId || !req.query.type) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Invalid request" });
+    }
+
+    const product = await Product.findById(req.query.productId);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Product not found" });
+    }
+
+    if (req.query.type === "isTrending") {
+      product.isTrending = !product.isTrending;
+      await product.save();
+
+      return res.status(200).json({
+        status: "success",
+        message: "Product updated successfully",
+        data: product,
+      });
+    } else if (req.query.type === "isJustLaunched") {
+      product.isJustLaunched = !product.isJustLaunched;
+      await product.save();
+      return res.status(200).json({
+        status: "success",
+        message: "Product updated successfully",
+        data: product,
+      });
+    } else if (req.query.type === "isBestSeller") {
+      product.isBestSeller = !product.isBestSeller;
+      await product.save();
+      return res.status(200).json({
+        status: "success",
+        message: "Product updated successfully",
+        data: product,
+      });
+    } else {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Invalid request" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "Error fetching products",
+      error: error.message,
+    });
+  }
+};
+
+exports.getProductsByType = async (req, res) => {
+  try {
+    const { type } = req.query;
+
+    if (!type) {
+      return res.status(400).json({
+        status: "error",
+        message: "Type query parameter is required",
+      });
+    }
+
+    const filterOptions = {
+      justLaunched: { isJustLaunched: true },
+      bestSeller: { isBestSeller: true },
+      trending: { isTrending: true },
+    };
+
+    if (!filterOptions[type]) {
+      return res.status(400).json({
+        status: "error",
+        message: "Something went wrong",
+      });
+    }
+
+    const products = await Product.find(filterOptions[type]).lean();
+    return res.status(200).json({ status: "success", data: products });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "Error fetching products",
+      error: error.message,
+    });
+  }
+};

@@ -62,6 +62,18 @@ const productSchema = new mongoose.Schema(
     brand:{
       type: String,
       required: true
+    },
+    isTrending:{
+      type: Boolean,
+      default: true
+    },
+    isJustLaunched: {
+      type: Boolean,
+      default: true
+    },
+    isBestSeller: {
+      type: Boolean,
+      default: true
     }
   },
   {

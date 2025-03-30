@@ -13,8 +13,11 @@ router.post('/', upload.array('images', 5), productController.createProduct); //
 // Get all products
 router.get('/', productController.searchAndFilterProducts);
 
-// // Get a single product by its ID
-// router.get('/:id', productController.getProductById);
+router.get('/getProductsByType', productController.getProductsByType);
+
+
+// handle justLaunched, isTrending, isBestSeller
+router.patch('/manageProducts', productController.manageProducts);
 
 // // Get products by category
 // router.get('/category/:categoryId', productController.getProductsByCategory);
