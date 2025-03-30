@@ -161,7 +161,6 @@ exports.searchAndFilterProducts = async (req, res) => {
     filterConditions.category = category;
   }
 
-
   if (minPrice) {
     filterConditions.price = { $gte: minPrice };
   }
@@ -197,6 +196,7 @@ exports.searchAndFilterProducts = async (req, res) => {
     });
   }
 };
+
 
 exports.manageProducts = async (req, res) => {
   try {
